@@ -4,7 +4,7 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 
-const theme = {}; // Your theme config (can be empty)
+const theme = {}; // Can be customized later if needed
 
 const initialConfig = {
   namespace: 'MyEditor',
@@ -12,21 +12,33 @@ const initialConfig = {
   onError: (error) => {
     console.error('Lexical error:', error);
   },
-  editorState: null, // ✅ safer than passing empty string
+  editorState: null,
 };
 
-export default function Editor() {
+export default function Editor({ value, onChange }) {
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <RichTextPlugin
-        contentEditable={<ContentEditable className="editor" />}
-        placeholder={<div className="placeholder">Start typing...</div>}
-      />
-      <HistoryPlugin />
-      <OnChangePlugin onChange={(editorState) => {
-        // Optional: handle change
-        
-      }} />
+      <div className="border border-gray-300 rounded-md p-3 min-h-[200px] bg-white shadow-sm">
+        <RichTextPlugin
+          contentEditable={
+            <ContentEditable
+              className="min-h-[150px] outline-none text-gray-800 prose max-w-none"
+            />
+          }
+          placeholder={
+            <div className="text-gray-400 italic absolute pointer-events-none">
+              Start typing...
+            </div>
+          }
+        />
+        <HistoryPlugin />
+        <OnChangePlugin onChange={(editorState) => {
+          editorState.read(() => {
+            const editorText = editorState.toJSON(); // Optional: for debugging
+            onChange && onChange(JSON.stringify(editorText)); // Example: convert to JSON
+          });
+        }} />
+      </div>
     </LexicalComposer>
   );
 }
