@@ -15,7 +15,7 @@ const initialConfig = {
   editorState: null,
 };
 
-export default function Editor({ value, onChange }) {
+export default function Editor({ onChange }) {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <div className="border border-gray-300 rounded-md p-3 min-h-[200px] bg-white shadow-sm">

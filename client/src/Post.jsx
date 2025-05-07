@@ -1,7 +1,7 @@
 import { formatISO9075 } from "date-fns";
 import { Link } from "react-router-dom";
 
-export default function Post({ _id, title, summary, cover, content, createdAt, author }) {
+export default function Post({ _id, title, summary, cover, createdAt, author }) {
   return (
     <div className="flex flex-col md:flex-row gap-6 mb-8 bg-white rounded-lg shadow-md overflow-hidden">
       <div className="md:w-1/3">
