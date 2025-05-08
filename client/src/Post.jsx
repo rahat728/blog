@@ -1,6 +1,8 @@
 import { formatISO9075 } from "date-fns";
 import { Link } from "react-router-dom";
 
+const uploadsUrl = import.meta.env.VITE_UPLOADS_URL;
+
 export default function Post({ _id, title, summary, cover, createdAt, author }) {
   return (
     <div className="flex flex-col md:flex-row gap-6 mb-8 bg-white rounded-lg shadow-md overflow-hidden">
@@ -8,7 +10,7 @@ export default function Post({ _id, title, summary, cover, createdAt, author }) 
         <Link to={`/post/${_id}`}>
           <img
             className="w-full h-48 md:h-full object-cover"
-            src={`http://localhost:4000/${cover}`}
+            src={`${uploadsUrl}/${cover}`}
             alt="Post cover"
           />
         </Link>

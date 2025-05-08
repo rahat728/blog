@@ -3,14 +3,16 @@ import {useParams} from "react-router-dom";
 import {formatISO9075} from "date-fns";
 import {UserContext} from "../UserContext";
 import {Link} from 'react-router-dom';
+import PostContentRenderer from "./PostContentRenderer"; // update path if needed
 
 export default function PostPage() {
   const [postInfo, setPostInfo] = useState(null);
   const {userInfo} = useContext(UserContext);
   const {id} = useParams();
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
   useEffect(() => {
-    fetch(`http://localhost:4000/post/${id}`)
+    fetch(`${apiUrl}/post/${id}`)
       .then(response => {
         response.json().then(postInfo => {
           setPostInfo(postInfo);
@@ -45,15 +47,13 @@ export default function PostPage() {
       <div className="mb-6">
         <img
           className="w-full rounded-md object-cover max-h-[400px]"
-          src={`http://localhost:4000/${postInfo.cover}`}
+          src={`${apiUrl}/uploads/${postInfo.cover}`}
           alt="Post Cover"
         />
       </div>
 
-      <div
-        className="prose prose-lg max-w-none"
-        dangerouslySetInnerHTML={{ __html: postInfo.content }}
-      />
+
+      <PostContentRenderer content={postInfo.content} />
     </div>
   );
 }

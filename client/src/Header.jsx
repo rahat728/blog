@@ -1,12 +1,15 @@
 import { Link } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { UserContext } from "./UserContext";
+import blogLogo from './assets/blog.png';
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function Header() {
   const { setUserInfo, userInfo } = useContext(UserContext);
 
   useEffect(() => {
-    fetch("http://localhost:4000/profile", {
+    fetch(`${apiUrl}/profile`, {
       credentials: "include",
     }).then((response) => {
       response.json().then((userInfo) => {
@@ -16,7 +19,7 @@ export default function Header() {
   }, [setUserInfo]);
 
   function logout() {
-    fetch("http://localhost:4000/logout", {
+    fetch(`${apiUrl}/logout`, {
       credentials: "include",
       method: "POST",
     });
@@ -27,8 +30,8 @@ export default function Header() {
 
   return (
     <header className="flex justify-between items-center px-6 py-4 bg-white shadow-md">
-      <Link to="/" className="text-2xl font-bold text-blue-600 hover:text-blue-800">
-        MyBlog
+      <Link to="/" className="flex items-center">
+        <img src={blogLogo} alt="Blog Logo" className="h-8 w-auto" />
       </Link>
       <nav className="flex gap-4 items-center text-gray-700">
         {username ? (

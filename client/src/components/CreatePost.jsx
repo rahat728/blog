@@ -22,7 +22,7 @@ export default function CreatePost() {
     }
     data.set('file', files[0]);
 
-    const response = await fetch('http://localhost:4000/post', {
+    const response = await fetch('http://:4000/post', {
       method: 'POST',
       body: data,
       credentials: 'include',
@@ -57,7 +57,7 @@ export default function CreatePost() {
       <input
         type="file"
         onChange={ev => setFiles(ev.target.files)}
-        className="w-full px-4 py-2 border rounded-md"
+        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
       />
       <Editor value={content} onChange={setContent} />
       <button
