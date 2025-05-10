@@ -111,18 +111,18 @@ app.post('/post', async (req, res) => {
   
 // Upload endpoint for Cloudinary
 app.post('/upload', uploadMiddleware.single('file'), async (req, res) => {
-    try {
-      if (!req.file?.path) {
-        return res.status(400).json({ error: 'No file uploaded' });
-      }
-  
-      res.json({ url: req.file.path }); // Cloudinary returns URL in `path` when using multer-storage-cloudinary
-    } catch (error) {
-      console.error('Error in /upload:', error);
-      res.status(500).json({ error: 'Upload failed' });
+  try {
+    console.log('Uploaded file:', req.file); // See file details
+    if (!req.file?.path) {
+      return res.status(400).json({ error: 'No file uploaded' });
     }
-  });
-  
+    res.json({ url: req.file.path });
+  } catch (error) {
+    console.error('Error in /upload:', error?.message || error);
+    res.status(500).json({ error: 'Upload failed' });
+  }
+});
+
 
 // Post update
 // Updated Post editing - accepts Cloudinary URL from frontend
