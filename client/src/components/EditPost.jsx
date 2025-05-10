@@ -24,19 +24,44 @@ export default function EditPost() {
 
   async function updatePost(ev) {
     ev.preventDefault();
-    const data = new FormData();
-    data.set('title', title);
-    data.set('summary', summary);
-    data.set('content', content);
-    data.set('id', id);
+
+    let coverUrl = null;
+
+    // Upload new file to /upload if present
     if (files?.[0]) {
-      data.set('file', files[0]);
+      const uploadData = new FormData();
+      uploadData.set('file', files[0]);
+
+      const uploadRes = await fetch(`${apiUrl}/upload`, {
+        method: 'POST',
+        body: uploadData,
+        credentials: 'include',
+      });
+
+      if (uploadRes.ok) {
+        const uploadResult = await uploadRes.json();
+        coverUrl = uploadResult.url;
+      } else {
+        alert("File upload failed");
+        return;
+      }
     }
+
+    const updatedPost = {
+      id,
+      title,
+      summary,
+      content,
+      ...(coverUrl && { cover: coverUrl }), // only add if file was uploaded
+    };
 
     const response = await fetch(`${apiUrl}/post`, {
       method: 'PUT',
-      body: data,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       credentials: 'include',
+      body: JSON.stringify(updatedPost),
     });
 
     if (response.ok) {
@@ -77,9 +102,7 @@ export default function EditPost() {
         onChange={(ev) => setFiles(ev.target.files)}
       />
 
-      <div>
-        <Editor onChange={setContent} value={content} />
-      </div>
+      <Editor onChange={setContent} value={content} />
 
       <button
         type="submit"

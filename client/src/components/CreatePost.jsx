@@ -9,27 +9,51 @@ export default function CreatePost() {
   const [files, setFiles] = useState(null);
   const [redirect, setRedirect] = useState(false);
 
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+
   async function createNewPost(ev) {
     ev.preventDefault();
-    const data = new FormData();
-    data.set('title', title);
-    data.set('summary', summary);
-    data.set('content', content);
 
     if (!files || files.length === 0) {
       alert("Please select a file");
       return;
     }
-    data.set('file', files[0]);
 
-    const response = await fetch('http://:4000/post', {
+    // Step 1: Upload file to backend → Cloudinary
+    const fileData = new FormData();
+    fileData.set('file', files[0]);
+
+    const uploadRes = await fetch(`${apiUrl}/upload`, {
       method: 'POST',
-      body: data,
+      body: fileData,
       credentials: 'include',
     });
 
-    if (response.ok) {
+    if (!uploadRes.ok) {
+      alert('Image upload failed');
+      return;
+    }
+
+    const uploadJson = await uploadRes.json();
+    const imageUrl = uploadJson.url;
+
+    // Step 2: Submit post with Cloudinary image URL
+    const postResponse = await fetch(`${apiUrl}/post`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        title,
+        summary,
+        content,
+        cover: imageUrl, // assuming backend expects "cover" field for image
+      }),
+    });
+
+    if (postResponse.ok) {
       setRedirect(true);
+    } else {
+      alert('Post creation failed');
     }
   }
 

@@ -81,55 +81,76 @@ app.post('/logout', (req, res) => {
 });
 
 // Post creation
-app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-  try {
-    const { token } = req.cookies;
-    if (!token) return res.status(401).json({ error: 'Token missing' });
-
-    jwt.verify(token, secret, {}, async (err, info) => {
-      if (err) return res.status(403).json({ error: 'Invalid token' });
-
-      const { title, summary, content } = req.body;
-      const coverUrl = req.file?.path;
-
-      const postDoc = await Post.create({
-        title,
-        summary,
-        content,
-        cover: coverUrl,
-        author: info.id,
+// Updated Post creation - no file upload here
+app.post('/post', async (req, res) => {
+    try {
+      const { token } = req.cookies;
+      if (!token) return res.status(401).json({ error: 'Token missing' });
+  
+      jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) return res.status(403).json({ error: 'Invalid token' });
+  
+        const { title, summary, content, cover } = req.body;
+        if (!cover) return res.status(400).json({ error: 'Cover image is required' });
+  
+        const postDoc = await Post.create({
+          title,
+          summary,
+          content,
+          cover, // Cloudinary URL comes from frontend
+          author: info.id,
+        });
+  
+        res.json(postDoc);
       });
-
-      res.json(postDoc);
-    });
-  } catch (error) {
-    console.error('Error in /post route:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
+    } catch (error) {
+      console.error('Error in /post route:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+  
+// Upload endpoint for Cloudinary
+app.post('/upload', uploadMiddleware.single('file'), async (req, res) => {
+    try {
+      if (!req.file?.path) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+  
+      res.json({ url: req.file.path }); // Cloudinary returns URL in `path` when using multer-storage-cloudinary
+    } catch (error) {
+      console.error('Error in /upload:', error);
+      res.status(500).json({ error: 'Upload failed' });
+    }
+  });
+  
 
 // Post update
-app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-  const { token } = req.cookies;
-  if (!token) return res.status(401).json({ error: 'Token missing' });
-
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) return res.status(403).json({ error: 'Invalid token' });
-
-    const { id, title, summary, content } = req.body;
-    const postDoc = await Post.findById(id);
-    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
-    if (!isAuthor) return res.status(403).json({ error: 'You are not the author' });
-
-    postDoc.title = title;
-    postDoc.summary = summary;
-    postDoc.content = content;
-    if (req.file?.path) postDoc.cover = req.file.path;
-
-    await postDoc.save();
-    res.json(postDoc);
+// Updated Post editing - accepts Cloudinary URL from frontend
+app.put('/post', async (req, res) => {
+    const { token } = req.cookies;
+    if (!token) return res.status(401).json({ error: 'Token missing' });
+  
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) return res.status(403).json({ error: 'Invalid token' });
+  
+      const { id, title, summary, content, cover } = req.body;
+  
+      const postDoc = await Post.findById(id);
+      const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+      if (!isAuthor) return res.status(403).json({ error: 'You are not the author' });
+  
+      postDoc.title = title;
+      postDoc.summary = summary;
+      postDoc.content = content;
+      if (cover) {
+        postDoc.cover = cover; // use new image URL if provided
+      }
+  
+      await postDoc.save();
+      res.json(postDoc);
+    });
   });
-});
+  
 
 // Post list & detail
 app.get('/post', async (req, res) => {
