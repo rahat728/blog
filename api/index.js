@@ -118,7 +118,8 @@ app.post('/upload', uploadMiddleware.single('file'), async (req, res) => {
     }
     res.json({ url: req.file.path });
   } catch (error) {
-    console.error('Error in /upload:', error?.message || error);
+console.error('Error in /upload:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+
     res.status(500).json({ error: 'Upload failed' });
   }
 });
