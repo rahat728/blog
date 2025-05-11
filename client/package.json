@@ -14,6 +14,7 @@
     "@lexical/react": "^0.31.0",
     "@lexical/rich-text": "^0.31.0",
     "@tailwindcss/vite": "^4.1.5",
+    "date-fns": "^4.1.0",
     "lexical": "^0.31.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
