@@ -166,9 +166,3 @@ blog/
 * **GitHub:** [github](https://github.com/rahat728)
 
 ---
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
