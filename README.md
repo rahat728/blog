@@ -162,8 +162,8 @@ blog/
 
 * **Name:** Asifuzzaman Rahat
 * **Email:** [asifuzzamanrahat728@gmail.com](mailto:asifuzzamanrahat728@gmail.com)
-* **LinkedIn:** [md-rahat-728981192](https://www.linkedin.com/in/mdrahat728)
-* **GitHub:** [your-github-profile](https://github.com/rahat728)
+* **LinkedIn:** [mdrahat728](https://www.linkedin.com/in/mdrahat728)
+* **GitHub:** [github](https://github.com/rahat728)
 
 ---
 
