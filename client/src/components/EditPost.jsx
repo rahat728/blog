@@ -101,7 +101,7 @@ useEffect(() => {
       />
 
       {/* Show existing cover if available */}
-      {existingCover && (
+      
         <div className="w-full">
           <img
             src={existingCover}
@@ -109,7 +109,7 @@ useEffect(() => {
             className="w-full max-h-60 object-cover rounded mb-4"
           />
         </div>
-      )}
+  
 
       <input
         type="file"
