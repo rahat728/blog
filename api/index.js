@@ -17,7 +17,7 @@ const uploadMiddleware = multer({ storage });
 
 const secret = process.env.SECRET_KEY;
 const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
-const allowedOrigins = [clientUrl, 'https://blog-und6.onrender.com/'];
+const allowedOrigins = [clientUrl, 'https://blog-und6.onrender.com'];
 
 app.use(cors({
   credentials: true,
