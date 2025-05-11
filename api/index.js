@@ -59,12 +59,17 @@ app.post('/login', async (req, res) => {
   if (passOk) {
     jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
       if (err) return res.status(500).json('Token error');
-      res.cookie('token', token).json({ id: userDoc._id, username });
+      res.cookie('token', token, {
+        httpOnly: true,
+        sameSite: 'Lax',
+        secure: false,
+      }).json({ id: userDoc._id, username });
     });
   } else {
     res.status(400).json('Wrong credentials');
   }
 });
+
 
 app.get('/profile', (req, res) => {
   const { token } = req.cookies;
