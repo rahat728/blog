@@ -4,25 +4,25 @@ import Editor from "../Editor";
 
 export default function EditPost() {
   const { id } = useParams();
-  const [title, setTitle] = useState('');
-  const [summary, setSummary] = useState('');
-  const [content, setContent] = useState('');
+  const [title, setTitle] = useState("");
+  const [summary, setSummary] = useState("");
+  const [content, setContent] = useState("");
   const [files, setFiles] = useState(null);
   const [redirect, setRedirect] = useState(false);
   const [existingCover, setExistingCover] = useState(null);
 
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
   useEffect(() => {
-    fetch(`${apiUrl}/post/${id}`)
-      .then(response => response.json())
-      .then(postInfo => {
-        setTitle(postInfo.title);
-        setSummary(postInfo.summary);
-        setContent(postInfo.content);
-        setExistingCover(postInfo.cover); // Save current cover for preview
-      });
-  }, [id]);
+  fetch(`${apiUrl}/post/${id}`)
+    .then(response => response.json())
+    .then(postInfo => {
+      setTitle(postInfo.title);
+      setSummary(postInfo.summary);
+      setContent(postInfo.content);
+      setExistingCover(postInfo.cover); // ✅ FIXED HERE
+    });
+}, [id]);
+
 
   async function updatePost(ev) {
     ev.preventDefault();
@@ -32,12 +32,12 @@ export default function EditPost() {
     // Upload new file if selected
     if (files?.[0]) {
       const uploadData = new FormData();
-      uploadData.set('file', files[0]);
+      uploadData.set("file", files[0]);
 
       const uploadRes = await fetch(`${apiUrl}/upload`, {
-        method: 'POST',
+        method: "POST",
         body: uploadData,
-        credentials: 'include',
+        credentials: "include",
       });
 
       if (uploadRes.ok) {
@@ -58,11 +58,11 @@ export default function EditPost() {
     };
 
     const response = await fetch(`${apiUrl}/post`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
       body: JSON.stringify(updatedPost),
     });
 
