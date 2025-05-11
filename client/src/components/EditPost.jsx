@@ -12,16 +12,18 @@ export default function EditPost() {
   const [existingCover, setExistingCover] = useState(null);
 
   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
-  useEffect(() => {
+useEffect(() => {
   fetch(`${apiUrl}/post/${id}`)
     .then(response => response.json())
     .then(postInfo => {
+      console.log("Fetched cover:", postInfo.cover); // ✅ Check this
       setTitle(postInfo.title);
       setSummary(postInfo.summary);
       setContent(postInfo.content);
-      setExistingCover(postInfo.cover); // ✅ FIXED HERE
+      setExistingCover(postInfo.cover);
     });
 }, [id]);
+
 
 
   async function updatePost(ev) {
