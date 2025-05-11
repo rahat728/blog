@@ -7,8 +7,9 @@ export default function EditPost() {
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState('');
   const [content, setContent] = useState('');
-  const [files, setFiles] = useState('');
+  const [files, setFiles] = useState(null);
   const [redirect, setRedirect] = useState(false);
+  const [existingCover, setExistingCover] = useState(null);
 
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
@@ -19,15 +20,16 @@ export default function EditPost() {
         setTitle(postInfo.title);
         setSummary(postInfo.summary);
         setContent(postInfo.content);
+        setExistingCover(postInfo.cover); // Save current cover for preview
       });
   }, [id]);
 
   async function updatePost(ev) {
     ev.preventDefault();
 
-    let coverUrl = null;
+    let coverUrl = existingCover;
 
-    // Upload new file to /upload if present
+    // Upload new file if selected
     if (files?.[0]) {
       const uploadData = new FormData();
       uploadData.set('file', files[0]);
@@ -52,7 +54,7 @@ export default function EditPost() {
       title,
       summary,
       content,
-      ...(coverUrl && { cover: coverUrl }), // only add if file was uploaded
+      cover: coverUrl,
     };
 
     const response = await fetch(`${apiUrl}/post`, {
@@ -95,6 +97,17 @@ export default function EditPost() {
         value={summary}
         onChange={(ev) => setSummary(ev.target.value)}
       />
+
+      {/* Show existing cover if available */}
+      {existingCover && (
+        <div className="w-full">
+          <img
+            src={existingCover}
+            alt="Current Cover"
+            className="w-full max-h-60 object-cover rounded mb-4"
+          />
+        </div>
+      )}
 
       <input
         type="file"
